@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from "axios";
 
 
-const { group_guid, POST_URL, KEY } = require("./config");
+const { group_guidNum, POST_URL, KEY } = require("./config");
 
 function Main() {
 
@@ -11,23 +11,37 @@ function Main() {
         'Authorization': `Bearer ${KEY}`
     }
 
-    const [ inputURL, setInputURL ] = useState('');
-    const [ urlData, setUrlData ] = useState({});
+    const [ inputURL, setInputURL ] = useState('')
+    const [ formData, setFormData ] = useState(null);
+    const [ result, setResult ] = useState('')
 
+    // const fetchData = async () => {
+    //     const response = await axios.post(POST_URL, formData, headers)
+    //         .then(response => console.log(response.data))
+        
+    // }
+    
     const useEffect =(() => {
-        fetchData();
-    },[]);
+        const fetchData = async () => {
+            const response = await axios.post(POST_URL,formData,headers)
+            console.log(response);   
+        }
+    },[inputURL]);
 
-    const fetchData = async () => {
-        const response = await axios.post(POST_URL, headers)
-        console.log(response)
+    const generateFormData = async () => {
+        const formData = {
+            "group_guid":group_guidNum,
+            "long_url": inputURL
+        }
+        console.log(JSON.stringify(formData));
+        setFormData(JSON.stringify(formData));
+        // fetchData();
     }
 
     const handleClick = async (e) => {
         e.preventDefault();
-        console.log(inputURL);
+        generateFormData();
     }
-
 
     return (
         <div>
@@ -43,7 +57,8 @@ function Main() {
                 <button onClick={ handleClick }>Shorten!</button>
             </form>
 
-            <div>{ inputURL }</div>
+            <h2>Shortened URL</h2>
+            <p>{ result }</p>
             
         </div>
     )
