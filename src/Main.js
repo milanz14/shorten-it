@@ -1,67 +1,66 @@
 import React, { useState } from 'react';
 import axios from "axios";
 
-
 const { group_guidNum, POST_URL, KEY } = require("./config");
 
-function Main() {
-
+const Main = () => {
     const headers = { 
-        'Content-type':'application/json',
+        'Content-Type':'application/json',
         'Authorization': `Bearer ${KEY}`
     }
 
-    const [ inputURL, setInputURL ] = useState('')
-    const [ formData, setFormData ] = useState(null);
-    const [ result, setResult ] = useState('')
-
-    // const fetchData = async () => {
-    //     const response = await axios.post(POST_URL, formData, headers)
-    //         .then(response => console.log(response.data))
-        
-    // }
-    
-    const useEffect =(() => {
-        const fetchData = async () => {
-            const response = await axios.post(POST_URL,formData,headers)
-            console.log(response);   
-        }
-    },[inputURL]);
-
-    const generateFormData = async () => {
-        const formData = {
+    const [ isShortened, setIsShortened ] = useState(false);
+    const [ longURL, setLongURL ] = useState('')
+    const [ payload, setPayload ] = useState(null);
+    const [ result, setResult ] = useState('');
+  
+    const generateFormData = () => {
+        const formObj = {
             "group_guid":group_guidNum,
-            "long_url": inputURL
-        }
-        console.log(JSON.stringify(formData));
-        setFormData(JSON.stringify(formData));
-        // fetchData();
-    }
+            "long_url": longURL,
+        };
+        console.log(JSON.stringify(formObj));
+        setPayload(JSON.stringify(formObj));
+        fetch(payload);
+    };
 
-    const handleClick = async (e) => {
+    const fetch = (data) => {
+        axios.post(POST_URL, data, {headers})
+            .then(resp => {
+                setResult(resp.data.link)
+                setIsShortened(true);
+            })
+            .catch(err => console.log(err))
+    };
+
+
+    const handleClick = (e) => {
         e.preventDefault();
         generateFormData();
-    }
+    };
 
     return (
         <div>
-            <form>
-                <label htmlFor="url">Paste URL HERE:</label>
+            <form onSubmit={ handleClick }>
+                <label htmlFor="url">Paste Long URL here:</label>
                 <input 
-                    value={inputURL}
+                    value={longURL}
                     name="url" 
                     type="text" 
-                    placeholder="enter url..."
-                    onChange={e => setInputURL(e.target.value)} >
+                    placeholder="Enter url..."
+                    onChange={e => setLongURL(e.target.value)} >
                 </input>
-                <button onClick={ handleClick }>Shorten!</button>
+                <button>Shorten!</button>
             </form>
 
-            <h2>Shortened URL</h2>
-            <p>{ result }</p>
-            
+            { isShortened ? 
+                <div>
+                <h2>Here's your Shortened URL</h2>
+                <p>{ result }</p>
+                </div> : <p>You haven't shortened anything yet.</p> }
         </div>
     )
 }
+
 
 export default Main;
