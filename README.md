@@ -6,4 +6,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 A simple URL shortener which uses the Bitly API
 
-Live Site: 
+Live Site: theshortening.netlify.app
