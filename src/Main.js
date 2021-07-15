@@ -23,9 +23,11 @@ const Main = (props) => {
     const [ longURL, setLongURL ] = useState('')
     const [ payload, setPayload ] = useState({});
     const [ result, setResult ] = useState('');
+    const [ isError, setIsError ] = useState(false);
 
     useEffect(() => {
         fetch(payload)
+        setIsError(false);
     },[payload]);
   
     const generateFormData = () => {
@@ -51,17 +53,17 @@ const Main = (props) => {
             })
             .catch(err => {
                 console.log(err);
+                setIsError(true);
             })
     };
 
     return (
         <div className="Main-app">
-            <h2>Enter URL Below (https)</h2>
+            <h2>Paste URL Below</h2>
             <form className="Main-app-form" onSubmit={ handleSubmit} >
                 <div className="textfield">
                     <TextField
-                        label="URL" 
-                        placeholder="Enter URL"
+                        label="https://www.example-url.com" 
                         id="outlined-full-width"
                         fullWidth
                         value={longURL}
@@ -78,7 +80,8 @@ const Main = (props) => {
                 </Button>
                 </div>
             </form>
-            { isShortened ? 
+            { isError && <div><h4>Please enter the long URL in the format required</h4></div> }
+            { isShortened &&
                 <div>
                 <h2>Here's your Shortened URL</h2>
                 <p>{ result }</p>
@@ -87,7 +90,7 @@ const Main = (props) => {
                     onClick={() => navigator.clipboard.writeText(result)}>
                         Copy to Clipboard
                 </Button>
-                </div> : <span></span> }
+                </div> }
         </div>
     )
 }
