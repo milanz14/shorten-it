@@ -45,6 +45,13 @@ const Main = (props) => {
         generateFormData();
     };
 
+    const handleReset = (e) => {
+        setLongURL('');
+        setIsShortened(false);
+        setResult('')
+        setPayload({});
+    }
+
     const fetch = (data) => {
         axios.post(POST_URL, data, {headers})
             .then(resp => {
@@ -77,6 +84,12 @@ const Main = (props) => {
                     type="submit"
                     variant="contained" 
                     color="primary"> Shorten!
+                </Button>
+                <Button
+                    onClick={ handleReset }
+                    variant="contained"
+                    color="secondary">
+                        Reset
                 </Button>
                 </div>
             </form>
